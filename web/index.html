@@ -298,7 +298,7 @@
                         <div class="col">
                             <caption>Item Id:</caption>
                             <form>
-                                <input id="txtI_Id" class="form-control " type="text">
+                                <input id="txtI_Id" name="itid" class="form-control " type="text">
                             </form>
                         </div>
 
@@ -332,11 +332,11 @@
                         <div class="col">
                             <caption>Order QTY:</caption>
                             <form>
-                                <input id="txtI_Qty" class="form-control " type="text">
+                                <input id="txtI_Qty" name="oqty" class="form-control " type="text">
                             </form>
                         </div>
                     </div>
-                </form>
+
 
 
 
@@ -374,7 +374,7 @@
                     <div class="col">
                         <caption>Discount:</caption>
                         <form>
-                            <input id="txtDiscount" class="form-control " type="text">
+                            <input id="txtDiscount" name="discount" class="form-control " type="text">
                         </form>
                     </div>
                 </div>
@@ -388,7 +388,7 @@
                         </form>
                     </div>
                 </div>
-
+                </form>
 
                 <div class="row">
                     <div class="col">
@@ -1418,7 +1418,26 @@
             $("#txtBalance").val(payment - price);
         });
         $("#btnPlaceOrder").click(function () {
-            checkorderValid();
+            var data = $("#ItForm").serialize(); // return query string of form with name:type-value
+            $.ajax({
+                url: "orderdetail",
+                method: "POST",
+                data: data,// if we send data with the request
+                success: function (res) {
+                    if (res.status == 200) {
+                        alert(res.message);
+                    } else {
+                        alert(res.data);
+                    }
+
+                },
+                error: function (ob, textStatus, error) {
+                    console.log(ob);
+                    console.log(textStatus);
+                    console.log(error);
+                }
+            });
+
         });
         $("#btnSearchOrder").click(function () {
             var searchID = $("#txtSearchOrder").val();
@@ -1426,26 +1445,6 @@
             $("#txtSearchOrder").val("");
         });
 
-
-        function addorder() {
-            let orderId = $("#txtO_Id").val();
-            let date = $("#txtO_Date")
-            let custid = $("#txtC_Id").val();
-
-            var order = new OrderDto(orderId, date, custid, total);
-            placeOrder(order);
-            updateqty(itemList);
-            AddOrder(itemList);
-            total = 0;
-            itemList.splice(0, itemList.length);
-            clearAll();
-            clearor();
-            $("#txtBalance").val("");
-            $("#lblTotal").text("");
-
-
-            $("#OrderTable").empty();
-        }
 
 
 
