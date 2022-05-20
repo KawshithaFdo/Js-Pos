@@ -22,11 +22,31 @@ public class CustomerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            String option = req.getParameter("option");
+            String customerID = req.getParameter("id");
             resp.setContentType("application/json");
             Connection connection = ds.getConnection();
             PrintWriter writer = resp.getWriter();
 
             resp.addHeader("Access-Control-Allow-Origin", "*");
+
+            switch (option) {
+                case "SEARCH":
+                    PreparedStatement pstm = connection.prepareStatement("Select * from Customer where CustId=?");
+                    pstm.setObject(1, customerID);
+                    ResultSet rest = pstm.executeQuery();
+                    String na = rest.getString(1);
+                    String add = rest.getString(2);
+                    double sal = rest.getDouble(3);
+
+                    JsonObjectBuilder objectBuilder1 = Json.createObjectBuilder();
+                    objectBuilder1.add("na", na);
+                    objectBuilder1.add("add", add);
+                    objectBuilder1.add("sal", sal);
+
+                    writer.print(objectBuilder1.build());
+                    break;
+                case "GETALL":
 
                     ResultSet rst = connection.prepareStatement("select * from Customer").executeQuery();
                     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder(); // json array
@@ -49,7 +69,8 @@ public class CustomerServlet extends HttpServlet {
                     response.add("message", "Done");
                     response.add("data", arrayBuilder.build());
                     writer.print(response.build());
-
+                    break;
+            }
 
             connection.close();
 

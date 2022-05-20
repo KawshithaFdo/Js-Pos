@@ -218,33 +218,32 @@
 
 
             <section class="container">
+                <form id="CustForm">
+                    <div class="row">
+                        <div class="bg-info mb-3 p-2"><h4>Bill Details</h4></div>
+                        <div class="col">
+                            <caption>Order ID:</caption>
+                            <form>
+                                <input id="txtO_Id" name="orID" class="form-control " type="text">
+                            </form>
+                        </div>
+                        <div class="col">
+                            <caption>Order Date:</caption>
+                            <form>
+                                <input id="txtO_Date" name="odate" class="form-control " type="text">
+                            </form>
+                        </div>
 
-                <div class="row">
-                    <div class="bg-info mb-3 p-2"><h4>Bill Details</h4></div>
-                    <div class="col">
-                        <caption>Order ID:</caption>
-                        <form>
-                            <input id="txtO_Id" class="form-control " type="text">
-                        </form>
-                    </div>
-                    <div class="col">
-                        <caption>Order Date:</caption>
-                        <form>
-                            <input id="txtO_Date" class="form-control " type="text">
-                        </form>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <caption>Customer_ID:</caption>
-                        <form>
-                            <input id="txtC_Id" class="form-control " type="text">
-                        </form>
                     </div>
 
-                </div>
+                    <div class="row">
+                        <div class="col">
+                            <caption>Customer_ID:</caption>
+                            <form>
+                                <input id="txtC_Id" name="cusid" class="form-control " type="text">
+                            </form>
+                        </div>
+                        <!--</div>
                 <div class="row">
                     <div class="col">
                         <caption>Name:</caption>
@@ -266,9 +265,13 @@
                         <form>
                             <input id="txtC_Salary" class="form-control " type="text">
                         </form>
+                    </div>-->
+
                     </div>
 
-                </div>
+                </form>
+
+
                 <hr class="bg-dark">
                 <div class="row">
                     <div class="col">
@@ -289,50 +292,52 @@
         <div class="col bg-gradient m-4 pb-4">
 
             <section class="container">
+                <form id="ItForm">
+                    <div class="row">
+                        <div class="bg-info mb-3 p-2"><h4>Item Details</h4></div>
+                        <div class="col">
+                            <caption>Item Id:</caption>
+                            <form>
+                                <input id="txtI_Id" class="form-control " type="text">
+                            </form>
+                        </div>
 
-                <div class="row">
-                    <div class="bg-info mb-3 p-2"><h4>Item Details</h4></div>
-                    <div class="col">
-                        <caption>Item Id:</caption>
-                        <form>
-                            <input id="txtI_Id" class="form-control " type="text">
-                        </form>
                     </div>
+                    <!-- <div class="row">
+                         <div class="col">
+                             <caption>Item Name:</caption>
+                             <form>
+                                 <input id="txtI_Name" class="form-control " type="text">
+                             </form>
+                         </div>
+                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <caption>Item Name:</caption>
-                        <form>
-                            <input id="txtI_Name" class="form-control " type="text">
-                        </form>
-                    </div>
-                </div>
+                     <div class="row">
+                         <div class="col">
+                             <caption>Item Price:</caption>
+                             <form>
+                                 <input id="txtI_Price" class="form-control " type="text">
+                             </form>
+                         </div>
+                         <div class="col">
+                             <caption>QtyOnH:</caption>
+                             <form>
+                                 <input id="txtI_Qoh" class="form-control " type="text">
+                             </form>
+                         </div>
 
-                <div class="row">
-                    <div class="col">
-                        <caption>Item Price:</caption>
-                        <form>
-                            <input id="txtI_Price" class="form-control " type="text">
-                        </form>
+                     </div>
+     -->
+                    <div class="row">
+                        <div class="col">
+                            <caption>Order QTY:</caption>
+                            <form>
+                                <input id="txtI_Qty" class="form-control " type="text">
+                            </form>
+                        </div>
                     </div>
-                    <div class="col">
-                        <caption>QtyOnH:</caption>
-                        <form>
-                            <input id="txtI_Qoh" class="form-control " type="text">
-                        </form>
-                    </div>
+                </form>
 
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <caption>Order QTY:</caption>
-                        <form>
-                            <input id="txtI_Qty" class="form-control " type="text">
-                        </form>
-                    </div>
-                </div>
 
 
                 <div class="row">
@@ -674,13 +679,12 @@
 
     loadAllCustomers();
 
-    //Methods
+
     function loadAllCustomers() {
         $("#customerTable").empty();
         $.ajax({
-            url: "customer",
+            url: "customer?option=GETALL",
             method: "GET",
-            // dataType:"json", // please convert the response into JSON
             success: function (resp) {
                 for (const customer of resp.data) {
                     let row = `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.address}</td><td>${customer.salary}</td></tr>`;
@@ -1342,91 +1346,108 @@
 
     //----------------Orders-----------------------------------------------------------------
 
-    $("#txtC_Id").on('keyup', function (eventOb) {
-        if (eventOb.key == "Enter") {
-            var searchID = $("#txtC_Id").val();
-            var response = searchCustomer(searchID);
-            if (response) {
-                $("#txtC_Name").val(response.name);
-                $("#txtC_Address").val(response.address);
-                $("#txtC_Salary").val(response.salary);
-            }else{
-                clearAll();
-                alert("Wrong Customer Id.");
+    /*$("#txtC_Id").on('keyup', function (eventOb) {
+        var id = $("#txtC_Id").val();
+
+        $.ajax({
+            url: "customer?option=SEARCH?id=" + id,
+            method: "GET",
+            success: function (resp) {
+                /!*for (const customer of resp.data) {
+                    let row = `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.address}</td><td>${customer.salary}</td></tr>`;
+                    $("#customerTable").append(row);
+                }*!/
+                $("#txtC_Name").val(resp.na);
+                $("#txtC_Address").val(resp.add);
+                $("#txtC_Salary").val(resp.sal);
+
+
+                bindClickEvents();
+            },
+            error: function (ob, state) {
+                console.log(ob, state)
             }
-        }
+        });
     });
-    $("#txtI_Id").on('keyup', function (eventOb) {
-        if (eventOb.key == "Enter") {
-            var searchID = $("#txtI_Id").val();
-            var response = searchItem(searchID);
-            if (response) {
-                $("#txtI_Name").val(response.name);
-                $("#txtI_Price").val(response.price);
-                $("#txtI_Qoh").val(response.qty);
-            }else{
-                clearAll();
-                alert("Wrong Item Id.");
+        $("#txtI_Id").on('keyup', function (eventOb) {
+            if (eventOb.key == "Enter") {
+                var searchID = $("#txtI_Id").val();
+                var response = searchItem(searchID);
+                if (response) {
+                    $("#txtI_Name").val(response.name);
+                    $("#txtI_Price").val(response.price);
+                    $("#txtI_Qoh").val(response.qty);
+                } else {
+                    clearAll();
+                    alert("Wrong Item Id.");
+                }
             }
+        });
+        let total = 0;*/
+        $("#btnAddItem").click(function () {
+            var data = $("#CustForm").serialize(); // return query string of form with name:type-value
+            $.ajax({
+                url: "order",
+                method: "POST",
+                data: data,// if we send data with the request
+                success: function (res) {
+                    if (res.status == 200) {
+                        alert(res.message);
+                    } else {
+                        alert(res.data);
+                    }
+
+                },
+                error: function (ob, textStatus, error) {
+                    console.log(ob);
+                    console.log(textStatus);
+                    console.log(error);
+                }
+            });
+
+        });
+        $("#btnClearTable").click(function () {
+            $("#OrderTable").empty();
+            $("#lblTotal").text("");
+
+        });
+        $("#txtDiscount").keyup(function () {
+            let payment = $("#txtPayment").val();
+            let discount = $("#txtDiscount").val();
+            let price = total - discount;
+            $("#txtBalance").val(payment - price);
+        });
+        $("#btnPlaceOrder").click(function () {
+            checkorderValid();
+        });
+        $("#btnSearchOrder").click(function () {
+            var searchID = $("#txtSearchOrder").val();
+            searchOrderItem(searchID);
+            $("#txtSearchOrder").val("");
+        });
+
+
+        function addorder() {
+            let orderId = $("#txtO_Id").val();
+            let date = $("#txtO_Date")
+            let custid = $("#txtC_Id").val();
+
+            var order = new OrderDto(orderId, date, custid, total);
+            placeOrder(order);
+            updateqty(itemList);
+            AddOrder(itemList);
+            total = 0;
+            itemList.splice(0, itemList.length);
+            clearAll();
+            clearor();
+            $("#txtBalance").val("");
+            $("#lblTotal").text("");
+
+
+            $("#OrderTable").empty();
         }
-    });
-    let total=0;
-    $("#btnAddItem").click(function () {
-        let orderId=$("#txtO_Id").val();
-        let itemId = $("#txtI_Id").val();
-        let itemName = $("#txtI_Name").val();
-        let qty = $("#txtI_Qty").val();
-        let qoh=$("#txtI_Qoh").val();
-        let price=(($("#txtI_Price").val())*(qty));
-
-        var itemdetails=new ItemDetailsDto(orderId,itemId,itemName,qty,qoh,price);
-
-        itemList.push(itemdetails);
-        loadtabledata(itemdetails);
-
-       total+= price;
-        $("#lblTotal").text(total);
-    });
-    $("#btnClearTable").click(function () {
-        $("#OrderTable").empty();
-        $("#lblTotal").text("");
-
-    });
-    $("#txtDiscount").keyup(function () {
-        let payment = $("#txtPayment").val();
-        let discount = $("#txtDiscount").val();
-        let price=total-discount;
-        $("#txtBalance").val(payment-price);
-    });
-    $("#btnPlaceOrder").click(function () {
-        checkorderValid();
-    });
-    $("#btnSearchOrder").click(function () {
-        var searchID = $("#txtSearchOrder").val();
-        searchOrderItem(searchID);
-        $("#txtSearchOrder").val("");
-    });
 
 
-    function addorder() {
-        let orderId=$("#txtO_Id").val();
-        let date=$("#txtO_Date")
-        let custid=$("#txtC_Id").val();
-
-        var order=new OrderDto(orderId,date,custid,total);
-        placeOrder(order);
-        updateqty(itemList);
-        AddOrder(itemList);
-        total=0;
-        itemList.splice(0,itemList.length);
-        clearAll();
-        clearor();
-        $("#txtBalance").val("");
-        $("#lblTotal").text("");
-
-
-        $("#OrderTable").empty();
-    }
 
 
 
