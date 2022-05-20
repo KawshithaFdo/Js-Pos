@@ -85,7 +85,7 @@
                 <div class="row bg-gradient "><h4>Save Customer</h4></div>
                 <div class="row bg-gradient">
                     <form class="mt-4 mb-4 w-100" >
-                        <input id="search" class="form-control w-50 col-sm-5 " type="search" placeholder="Search/Delete" aria-label="Search">
+                        <input id="search" class="form-control w-50 col-sm-5 " name="search" type="search" placeholder="Search/Delete" aria-label="Search">
                     </form>
                 </div>
                 <div class="row bg-gradient">
@@ -101,26 +101,29 @@
             </section>
         </div>
         <div class="col-6 pt-5">
-            <div class="mb-3">
-                <label class="form-label" for="txtCustId">Customer ID</label>
-                <input class="form-control w-50" id="txtCustId" placeholder="Customer ID" type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="txtCustName">Customer Name</label>
-                <input class="form-control w-50" id="txtCustName" placeholder="Customer Name" type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="txtCustAddress">Customer Address</label>
-                <input class="form-control w-50" id="txtCustAddress" placeholder="Customer Address" type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="txtCustSalary">Customer Salary</label>
-                <input class="form-control w-50" id="txtCustSalary" placeholder="Customer Salary" type="text">
-            </div>
-            <div class="mb-3">
-                <button id="btnSaveOrUpdate" type="button" class="btn btn-primary" >Save</button>
-                <button id="clearCustomer" type="button" class="btn btn-outline-primary">Clear</button>
-            </div>
+            <form id="customerForm">
+                <div class="mb-3">
+                    <label class="form-label" for="txtCustId">Customer ID</label>
+                    <input class="form-control w-50" id="txtCustId" name="customerID" placeholder="Customer ID" type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="txtCustName">Customer Name</label>
+                    <input class="form-control w-50" id="txtCustName" name="customerName" placeholder="Customer Name" type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="txtCustAddress">Customer Address</label>
+                    <input class="form-control w-50" id="txtCustAddress" name="customerAddress" placeholder="Customer Address" type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="txtCustSalary">Customer Salary</label>
+                    <input class="form-control w-50" id="txtCustSalary" name="customerSalary" placeholder="Customer Salary" type="text">
+                </div>
+                <div class="mb-3">
+                    <button id="btnSaveOrUpdate" type="button" class="btn btn-primary" >Save</button>
+                    <button id="clearCustomer" type="button" class="btn btn-outline-primary">Clear</button>
+                </div>
+            </form>
+
         </div>
     </div>
 
@@ -164,26 +167,29 @@
             </section>
         </div>
         <div class="col-6 pt-5">
-            <div class="mb-3">
-                <label class="form-label" for="txtItemId">Item ID</label>
-                <input class="form-control w-50" id="txtItemId" placeholder="Item ID" type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="txtItemName">Item Name</label>
-                <input class="form-control w-50" id="txtItemName" placeholder="Item Name" type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="txtItemPrice">Item Price</label>
-                <input class="form-control w-50" id="txtItemPrice" placeholder="Item Price" type="text">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="txtItemQty">Item Qty</label>
-                <input class="form-control w-50" id="txtItemQty" placeholder="Item Qty" type="text">
-            </div>
-            <div class="mb-3">
-                <button id="btnsaveItem" type="button" class="btn btn-primary" >Save</button>
-                <button id="clear" type="button" class="btn btn-outline-primary">Clear</button>
-            </div>
+            <form id="itemForm">
+                <div class="mb-3">
+                    <label class="form-label" for="txtItemId">Item ID</label>
+                    <input class="form-control w-50" id="txtItemId" name="itemId" placeholder="Item ID" type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="txtItemName">Item Name</label>
+                    <input class="form-control w-50" id="txtItemName" name="itemName" placeholder="Item Name" type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="txtItemPrice">Item Price</label>
+                    <input class="form-control w-50" id="txtItemPrice" name="unitp" placeholder="Item Price" type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="txtItemQty">Item Qty</label>
+                    <input class="form-control w-50" id="txtItemQty" name="qty" placeholder="Item Qty" type="text">
+                </div>
+                <div class="mb-3">
+                    <button id="btnsaveItem" type="button" class="btn btn-primary" >Save</button>
+                    <button id="clear" type="button" class="btn btn-outline-primary">Clear</button>
+                </div>
+            </form>
+
         </div>
     </div>
 
@@ -431,7 +437,7 @@
         $("#db").css("display","none");
         $("#it").css("display","none");
         $("#or").css("display","none");
-        loadallCustomers();
+        loadAllCustomers();
 
     });
     $("#item").click(function (){
@@ -440,7 +446,7 @@
         $("#or").css("display","none");
         $("#db").css("display","none");
 
-        loadallItems();
+        loadAllitems();
 
     });
     $("#order").click(function (){
@@ -611,38 +617,76 @@
             clearAll();
         });
         $("#DeleteCustomer").click(function () {
-            var D_id = $("#search").val();
-            deleteCustomer(D_id);
-            clearAll();
-            loadallCustomers();
+            let customerID = $("#search").val();
+
+            // initiate the request
+            $.ajax({
+                url: "customer?CusID=" + customerID,// viya query string
+                method: "DELETE",
+                //data:data,// application/x-www-form-urlencoded
+                success: function (res) {
+                    console.log(res);
+                    if (res.status == 200) {
+                        alert(res.message);
+                        loadAllCustomers();
+                    } else if (res.status == 400) {
+                        alert(res.data);
+                    } else {
+                        alert(res.data);
+                    }
+
+                },
+                error: function (ob, status, t) {
+                    console.log(ob);
+                    console.log(status);
+                    console.log(t);
+                }
+            });
          });
         $("#UpdateCustomer").click(function () {
-            let customerID = $("#txtCustId").val();
-            let customerName = $("#txtCustName").val();
-            let customerAddress = $("#txtCustAddress").val();
-            let customerSalary = $("#txtCustSalary").val();
+            var cusOb = {
+                id: $("#txtCustId").val(),
+                name: $("#txtCustName").val(),
+                address: $("#txtCustAddress").val(),
+                salary: $("#txtCustSalary").val()
+            }
 
-            var cust=new CustomerDto(customerID,customerName,customerAddress,customerSalary);
-
-            updateCustomer(cust);
-            clearAll();
-            loadallCustomers();
+            $.ajax({
+                url: "customer",
+                method: "PUT",
+                contentType: "application/json", //You should state request's content type using MIME types
+                data: JSON.stringify(cusOb), // format js object to valid json string
+                success: function (res) {
+                    if (res.status == 200) { // process is  ok
+                        alert(res.message);
+                        loadAllCustomers();
+                    } else if (res.status == 400) { // there is a problem with the client side
+                        alert(res.message);
+                    } else {
+                        alert(res.data); // else maybe there is an exception
+                    }
+                },
+                error: function (ob, errorStus) {
+                    console.log(ob); // other errors
+                }
+            });
     });
 
     loadAllCustomers();
 
     //Methods
     function loadAllCustomers() {
-        $("#tblCustomerJson").empty();
+        $("#customerTable").empty();
         $.ajax({
-            url: "http://localhost:8080/web/customer?option=GETALL",
+            url: "customer",
             method: "GET",
             // dataType:"json", // please convert the response into JSON
             success: function (resp) {
                 for (const customer of resp.data) {
                     let row = `<tr><td>${customer.id}</td><td>${customer.name}</td><td>${customer.address}</td><td>${customer.salary}</td></tr>`;
-                    $("#tblCustomerJson").append(row);
+                    $("#customerTable").append(row);
                 }
+
                 bindClickEvents();
             },
             error:function (ob,state){
@@ -651,10 +695,28 @@
         });
 
     }
-
-
     function save() {
+        var data = $("#customerForm").serialize();
+        $.ajax({
+            url: "customer",
+            method: "POST",
+            data: data,
+            success: function (res) {
+                if (res.status == 200) {
+                    alert(res.message);
+                    loadAllCustomers();
+                    clearAll();
+                } else {
+                    alert(res.data);
+                }
 
+            },
+            error: function (ob, textStatus, error) {
+                console.log(ob);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
         }
     function bindClickEvents() {
         $("#customerTable>tr").click(function () {
@@ -671,7 +733,6 @@
             $("#txtCustSalary").val(salary);
         });
     }
-
     function clearAll() {
         $('#txtCustId,#txtCustName,#txtCustAddress,#txtCustSalary,#search').val("");
     }
@@ -785,7 +846,6 @@
                         let res = confirm("Do you sure to add this Item..?");
                         if (res) {
                             saveitem();
-                            clearAllItems();
                         }
                     } else {
                         $("#txtItemQty").focus();
@@ -837,35 +897,118 @@
                 clearAllItems();
             });
             $("#DeleteItem").click(function () {
-                var D_id = $("#itemsearch").val();
-                deleteItem(D_id);
-                clearAllItems();
-                loadallItems();
+                let id = $("#itemsearch").val();
+
+                // initiate the request
+                $.ajax({
+                    url: "item?itemID=" + id,// viya query string
+                    method: "DELETE",
+                    //data:data,// application/x-www-form-urlencoded
+                    success: function (res) {
+                        console.log(res);
+                        if (res.status == 200) {
+                            alert(res.message);
+                            loadAllitems();
+                        } else if (res.status == 400) {
+                            alert(res.data);
+                        } else {
+                            alert(res.data);
+                        }
+
+                    },
+                    error: function (ob, status, t) {
+                        console.log(ob);
+                        console.log(status);
+                        console.log(t);
+                    }
+                });
             });
             $("#UpdateItem").click(function () {
-                let itemId = $("#txtItemId").val();
-                let itemName = $("#txtItemName").val();
-                let itemQty = $("#txtItemQty").val();
-                let itemPrice = $("#txtItemPrice").val();
+                var cusOb = {
+                    id: $("#txtItemId").val(),
+                    name: $("#txtItemName").val(),
+                    unitp: $("#txtItemPrice").val(),
+                    qty: $("#txtItemQty").val()
+                }
 
-                var item=new ItemDto(itemId,itemName,itemPrice,itemQty);
-
-                updateItem(item);
-                clearAllItems();
-                loadallItems();
+                $.ajax({
+                    url: "item",
+                    method: "PUT",
+                    contentType: "application/json", //You should state request's content type using MIME types
+                    data: JSON.stringify(cusOb), // format js object to valid json string
+                    success: function (res) {
+                        if (res.status == 200) { // process is  ok
+                            alert(res.message);
+                            loadAllitems();
+                        } else if (res.status == 400) { // there is a problem with the client side
+                            alert(res.message);
+                        } else {
+                            alert(res.data); // else maybe there is an exception
+                        }
+                    },
+                    error: function (ob, errorStus) {
+                        console.log(ob); // other errors
+                    }
+                });
             });
 
             function saveitem(){
-                let itemId = $("#txtItemId").val();
-                let itemName = $("#txtItemName").val();
-                let itemQty = $("#txtItemQty").val();
-                let itemPrice = $("#txtItemPrice").val();
+                var data = $("#itemForm").serialize();
+                $.ajax({
+                    url: "item",
+                    method: "POST",
+                    data: data,
+                    success: function (res) {
+                        if (res.status == 200) {
+                            alert(res.message);
+                            loadAllitems();
+                            clearAll();
+                        } else {
+                            alert(res.data);
+                        }
 
-                var item=new ItemDto(itemId,itemName,itemPrice,itemQty);
-
-                saveItem(item);
-                loadallItems();
+                    },
+                    error: function (ob, textStatus, error) {
+                        console.log(ob);
+                        console.log(textStatus);
+                        console.log(error);
+                    }
+                });
             }
+            function loadAllitems() {
+                $("#itemTable").empty();
+                $.ajax({
+                    url: "item",
+                    method: "GET",
+                    // dataType:"json", // please convert the response into JSON
+                    success: function (resp) {
+                        for (const item of resp.data) {
+                            let row = `<tr><td>${item.id}</td><td>${item.name}</td><td>${item.unitp}</td><td>${item.qty}</td></tr>`;
+                            $("#itemTable").append(row);
+                        }
+
+                        bindClickEventsitem();
+                    },
+                    error:function (ob,state){
+                        console.log(ob,state)
+                    }
+                });
+            }
+            function bindClickEventsitem() {
+        $("#itemTable>tr").click(function () {
+
+            let id = $(this).children().eq(0).text();
+            let name = $(this).children().eq(1).text();
+            let unitp = $(this).children().eq(2).text();
+            let qty = $(this).children().eq(3).text();
+
+            //Set values to the text-fields
+            $("#txtItemId").val(id);
+            $("#txtItemName").val(name);
+            $("#txtItemPrice").val(unitp);
+            $("#txtItemQty").val(qty);
+        });
+    }
 
     //-----------Validate Orders------------------------------------------------------------
 
@@ -1289,7 +1432,7 @@
 
 </script>
 
-<script src="assetststrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
 </body>
